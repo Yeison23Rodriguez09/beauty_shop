@@ -7,15 +7,13 @@ services:
     runtime: python
     plan: free
     branch: main
-
+    # ... (el resto de la configuración del servicio web se mantiene igual)
     buildCommand: |
       pip install -r requirements.txt
       python manage.py collectstatic --no-input
       python manage.py migrate
     startCommand: "gunicorn config.wsgi:application"
-
     healthCheckPath: /
-
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.4
@@ -40,10 +38,9 @@ services:
     runtime: python
     plan: free
     branch: main
-
+    # ... (el resto de la configuración del worker se mantiene igual)
     buildCommand: "pip install -r requirements.txt"
     startCommand: "celery -A config.celery worker --loglevel=info"
-
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.4
@@ -65,14 +62,16 @@ services:
           name: redis-cache
           property: connectionString
 
-  # 3. El Cache/Broker de Redis para Celery <-- REDIS MOVIDO AQUÍ
+  # 3. El Cache/Broker de Redis para Celery
   - type: redis
     name: redis-cache
     plan: free
     maxmemoryPolicy: allkeys-lru
+    ipAllowList: [] # <-- LA LÍNEA QUE RESUELVE EL ERROR. Lista vacía permite acceso de otros servicios de la cuenta.
+
 
 # Definición de los servicios de base de datos que usaremos
 databases:
-  # 4. La Base de Datos PostgreSQL <-- SOLO POSTGRES QUEDA AQUÍ
+  # 4. La Base de Datos PostgreSQL
   - name: postgres-db
     plan: free
