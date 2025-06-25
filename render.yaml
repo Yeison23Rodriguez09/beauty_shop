@@ -4,7 +4,7 @@ services:
   # 1. El Servidor Web (Tu aplicación Django)
   - type: web
     name: beauty-shop
-    runtime: python # <-- CORRECCIÓN AQUÍ
+    runtime: python
     plan: free
     branch: main
 
@@ -37,7 +37,7 @@ services:
   # 2. El Worker para Tareas en Segundo Plano (Celery)
   - type: worker
     name: beauty-shop-worker
-    runtime: python # <-- CORRECCIÓN AQUÍ
+    runtime: python
     plan: free
     branch: main
 
@@ -65,13 +65,14 @@ services:
           name: redis-cache
           property: connectionString
 
-# Definición de los servicios de base de datos que usaremos
-databases:
-  # 3. La Base de Datos PostgreSQL
-  - name: postgres-db
-    plan: free
-
-  # 4. El Cache/Broker de Redis para Celery
-  - name: redis-cache
+  # 3. El Cache/Broker de Redis para Celery <-- REDIS MOVIDO AQUÍ
+  - type: redis
+    name: redis-cache
     plan: free
     maxmemoryPolicy: allkeys-lru
+
+# Definición de los servicios de base de datos que usaremos
+databases:
+  # 4. La Base de Datos PostgreSQL <-- SOLO POSTGRES QUEDA AQUÍ
+  - name: postgres-db
+    plan: free
