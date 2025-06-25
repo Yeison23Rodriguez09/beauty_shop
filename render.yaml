@@ -1,8 +1,6 @@
 # render.yaml
-# render.yaml
-
 services:
-  # 1. Base de Datos PostgreSQL
+  # 1. Base de Datos PostgreSQL (NO usar runtime ni startCommand)
   - type: pserv
     name: postgres-db
     plan: free
@@ -22,14 +20,23 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.4
-      - key: DJANGO_ENV
-        value: production
       - key: SECRET_KEY
         generateValue: true
       - key: DEBUG
         value: false
-      - key: DATABASE_URL
+      - key: POSTGRES_DB
+        value: beautyshop_db
+      - key: POSTGRES_USER
+        value: your_db_user
+      - key: POSTGRES_PASSWORD
+        value: your_db_password
+      - key: POSTGRES_HOST
         fromService:
           type: pserv
           name: postgres-db
-          property: internalConnectionString
+          property: host
+      - key: POSTGRES_PORT
+        fromService:
+          type: pserv
+          name: postgres-db
+          property: port
