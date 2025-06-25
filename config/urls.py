@@ -9,9 +9,6 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view as get_yasg_schema_view
 from drf_yasg import openapi
 
-# ========================
-# 🔗 Documentación y Esquema API
-# ========================
 yasg_schema_view = get_yasg_schema_view(
     openapi.Info(
         title="Beauty Shop API",
@@ -36,17 +33,9 @@ api_urlpatterns = [
     path('redoc/', yasg_schema_view.with_ui('redoc', cache_timeout=0), name='api-redoc'),
 ]
 
-# ========================
-# 🌐 Rutas principales
-# ========================
 urlpatterns = [
-    # Admin
     path('admin/', admin.site.urls),
-
-    # Autenticación (Allauth)
     path('accounts/', include('allauth.urls')),
-
-    # Apps locales con namespaces
     path('', include('apps.core.urls', namespace='core')),
     path('cuentas/', include('apps.users.urls', namespace='users')),
     path('productos/', include('apps.catalog.urls', namespace='catalog')),
@@ -54,13 +43,8 @@ urlpatterns = [
     path('pedidos/', include('apps.orders.urls', namespace='orders')),
     path('pagos/', include('apps.payments.urls', namespace='payments')),
     path('blog/', include('apps.blog.urls', namespace='blog')),
-
-    # Documentación de la API
     path('api/', include(api_urlpatterns)),
 ]
 
-# ========================
-# 🖼️ Archivos Media en desarrollo
-# ========================
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

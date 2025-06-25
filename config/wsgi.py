@@ -5,7 +5,6 @@ from django.core.wsgi import get_wsgi_application
 # ========================
 # ⚙️ Selección del entorno
 # ========================
-# Usa la variable de entorno DJANGO_ENV para elegir el settings adecuado
 django_env = os.getenv('DJANGO_ENV', 'development').lower()
 
 if django_env == 'production':

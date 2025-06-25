@@ -1,31 +1,21 @@
 # beauty_shop/config/settings/production.py
 import os
+import dj_database_url
 from .base import *
 
 DEBUG = False
 
 # Allowed hosts
-ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',')
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'beauty-shop.onrender.com').split(',')
 if not any(ALLOWED_HOSTS):
     raise ValueError("DJANGO_ALLOWED_HOSTS no está definido correctamente.")
 
-# Base de datos PostgreSQL desde variables de entorno
+# Configuración de la base de datos con DATABASE_URL (Render lo proporciona)
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB'),
-        'USER': os.getenv('POSTGRES_USER'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': os.getenv('POSTGRES_HOST'),
-        'PORT': os.getenv('POSTGRES_PORT', '5432'),
-    }
+    'default': dj_database_url.config(conn_max_age=600)
 }
 
-for var in ['POSTGRES_DB', 'POSTGRES_USER', 'POSTGRES_PASSWORD', 'POSTGRES_HOST']:
-    if not os.getenv(var):
-        raise ValueError(f"La variable de entorno '{var}' es obligatoria.")
-
-# Archivos estáticos y WhiteNoise
+# Archivos estáticos
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -61,3 +51,4 @@ SECURE_HSTS_PRELOAD = True
 CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')
 if not any(CORS_ALLOWED_ORIGINS):
     raise ValueError("CORS_ALLOWED_ORIGINS debe estar definido.")
+

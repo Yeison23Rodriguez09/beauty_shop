@@ -65,7 +65,7 @@ MIDDLEWARE = [
 # ========================
 # 📦 Configuración básica
 # ========================
-ROOT_URLCONF = 'config.urls'
+ROOT_URLCONF = 'config.urls'            # <-- Aquí estaba la variable faltante
 WSGI_APPLICATION = 'config.wsgi.application'
 LANGUAGE_CODE = 'es-co'
 TIME_ZONE = 'America/Bogota'
@@ -150,3 +150,6 @@ DATABASES = {
 
 # 🛒 Identificador para el carrito de compras en la sesión
 CART_SESSION_ID = 'cart'
+
+ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email']
