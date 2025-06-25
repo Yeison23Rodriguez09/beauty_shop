@@ -1,6 +1,18 @@
 # render.yaml
 services:
-  # Servidor Web (Django)
+  # 1. Base de Datos PostgreSQL
+  - type: pserv
+    name: postgres-db
+    plan: free
+
+  # 2. Redis para Celery (puede quedarse por si lo usas localmente)
+  - type: redis
+    name: redis-cache
+    plan: free
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList: []
+
+  # 3. Servidor Web: Django App
   - type: web
     name: beauty-shop
     runtime: python
@@ -10,7 +22,7 @@ services:
       pip install -r requirements.txt
       python manage.py collectstatic --no-input
       python manage.py migrate
-    startCommand: gunicorn config.wsgi:application
+    startCommand: "gunicorn config.wsgi:application"
     healthCheckPath: /
     envVars:
       - key: PYTHON_VERSION
@@ -20,29 +32,12 @@ services:
       - key: DEBUG
         value: false
       - key: DATABASE_URL
-        value: <agrega_tu_valor_postgresql_url>
-      - key: REDIS_URL
-        value: <agrega_tu_valor_redis_url>
-
-  # Worker Celery
-  - type: worker
-    name: beauty-shop-worker
-    runtime: python
-    plan: free
-    branch: main
-    buildCommand: pip install -r requirements.txt
-    startCommand: celery -A config.celery worker --loglevel=info
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.4
-      - key: SECRET_KEY
         fromService:
-          name: beauty-shop
-          type: web
-          envVarKey: SECRET_KEY
-      - key: DEBUG
-        value: false
-      - key: DATABASE_URL
-        value: <agrega_tu_valor_postgresql_url>
+          type: pserv
+          name: postgres-db
+          property: internalConnectionString
       - key: REDIS_URL
-        value: <agrega_tu_valor_redis_url>
+        fromService:
+          type: redis
+          name: redis-cache
+          property: connectionString
