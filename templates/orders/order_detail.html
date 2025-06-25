@@ -1,0 +1,53 @@
+<!-- Detalle de pedido -->
+{% extends "base.html" %}
+
+{% block title %}Detalle del Pedido #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Detalle del Pedido <span class="text-primary">#{{ order.id }}</span></h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    Resumen de Productos
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        {% for item in order.items.all %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ item.product.name }} (x{{ item.quantity }})
+                            <span>${{ item.price|floatformat:2 }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card-footer d-flex justify-content-between fw-bold fs-5">
+                    <span>TOTAL</span>
+                    <span>${{ order.total|floatformat:2 }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    Información del Pedido
+                </div>
+                <div class="card-body">
+                    <p><strong>Fecha:</strong> {{ order.created_at|date:"d M, Y, P" }}</p>
+                    <p><strong>Estado:</strong> <span class="badge bg-success">{{ order.get_status_display }}</span></p>
+                    <hr>
+                    <h6 class="card-subtitle mb-2">Dirección de Envío</h6>
+                    <p class="card-text mb-0">{{ order.first_name }} {{ order.last_name }}</p>
+                    <p class="card-text mb-0">{{ order.address }}</p>
+                    <p class="card-text">{{ order.city }}, {{ order.postal_code }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-4">
+        <a href="{% url 'orders:order_list' %}" class="btn btn-secondary">&larr; Volver a Mis Pedidos</a>
+    </div>
+</div>
+{% endblock %}

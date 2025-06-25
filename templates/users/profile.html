@@ -1,0 +1,47 @@
+<!-- Perfil de usuario -->
+{% extends "base.html" %}
+
+{% block title %}Mi Perfil{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-10 col-lg-8 mx-auto">
+            <h1 class="mb-4">Bienvenida, {{ user.first_name|default:user.username }}</h1>
+            <p class="lead text-muted">Desde tu panel de control puedes ver tus pedidos recientes, gestionar tus datos personales y cambiar tu contraseña.</p>
+
+            <div class="card shadow-sm mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Información de la Cuenta</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Nombre Completo:</strong> {{ user.get_full_name }}</p>
+                    <p><strong>Correo Electrónico:</strong> {{ user.email }}</p>
+                    <p><strong>Rol:</strong> {{ user.get_role_display }}</p>
+                </div>
+            </div>
+
+            <div class="row mt-4 g-3">
+                <div class="col-md-4">
+                    <div class="list-group">
+                        <a href="{% url 'users:profile_edit' %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            Editar Perfil
+                            <i class="fas fa-user-edit"></i>
+                        </a>
+                        <a href="{% url 'account_change_password' %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            Cambiar Contraseña
+                            <i class="fas fa-key"></i>
+                        </a>
+                    </div>
+                </div>
+                 <div class="col-md-8">
+                    <div class="alert alert-info">
+                        <strong>Próximamente:</strong> Aquí podrías mostrar un resumen del último pedido o tus productos favoritos.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

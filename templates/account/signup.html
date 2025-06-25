@@ -1,0 +1,39 @@
+# \beauty_shop\templates\account\signup.html
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}Registrarse{% endblock %}
+
+{% block content %}
+<div class="card shadow p-4 rounded-4 mx-auto" style="max-width: 500px; background-color: #F7F5F2;">
+  <h2 class="mb-4 text-center" style="font-family: 'Playfair Display', serif; color: #343A40;">Crear cuenta</h2>
+
+  <form method="post" action="{% url 'account_signup' %}">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    {% for field in form %}
+      <div class="mb-3">
+        {{ field.label_tag }}
+        {{ field }}
+        {% for error in field.errors %}
+          <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+
+    {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+    {% endif %}
+
+    <button type="submit" class="btn btn-success w-100 rounded-pill" style="background-color: #A3B18A; border: none;">
+      {% trans "Registrarse" %}
+    </button>
+  </form>
+
+  <hr>
+  <p class="text-center small">
+    ¿Ya tienes cuenta? <a href="{% url 'account_login' %}">Inicia sesión</a>.
+  </p>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+<!-- Lista de posts del blog -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Nuestro Blog{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h1>Nuestro Blog</h1>
+        <p class="lead text-muted">Consejos, tendencias y noticias del mundo de la belleza.</p>
+    </div>
+
+    <div class="row g-4">
+        {% for post in post_list %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                    <img src="https://via.placeholder.com/400x250.png?text=Beauty+Shop" class="card-img-top" alt="Imagen no disponible">
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <small class="text-muted mb-2">
+                        Por {{ post.author.get_full_name|default:post.author.username }} el {{ post.created_at|date:"d M, Y" }}
+                    </small>
+                    <p class="card-text">{{ post.content|truncatewords:20 }}</p>
+                    <a href="{{ post.get_absolute_url }}" class="btn btn-primary mt-auto">Leer más &rarr;</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="alert alert-info">Aún no hemos publicado ningún artículo en el blog. ¡Vuelve pronto!</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+    <nav class="mt-5">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">Anterior</span></li>
+            {% endif %}
+
+            {% for i in paginator.page_range %}
+                {% if page_obj.number == i %}
+                    <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a></li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">Siguiente</span></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

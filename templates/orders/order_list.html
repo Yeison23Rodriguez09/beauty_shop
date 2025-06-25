@@ -1,0 +1,43 @@
+<!-- Historial de pedidos -->
+{% extends "base.html" %}
+
+{% block title %}Mis Pedidos{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Historial de Pedidos</h1>
+
+    {% if order_list %}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col"># Pedido</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in order_list %}
+                <tr>
+                    <th scope="row">{{ order.id }}</th>
+                    <td>{{ order.created_at|date:"d M, Y" }}</td>
+                    <td>${{ order.total|floatformat:2 }}</td>
+                    <td><span class="badge bg-success">{{ order.get_status_display }}</span></td>
+                    <td>
+                        <a href="{{ order.get_absolute_url }}" class="btn btn-sm btn-outline-primary">Ver Detalles</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        Aún no has realizado ningún pedido. ¿Por qué no echas un vistazo a nuestro <a href="{% url 'catalog:lista_productos' %}" class="alert-link">catálogo</a>?
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

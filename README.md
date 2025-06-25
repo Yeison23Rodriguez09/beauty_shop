@@ -1,0 +1,1 @@
+# Placeholder content for beauty_shop/README.md

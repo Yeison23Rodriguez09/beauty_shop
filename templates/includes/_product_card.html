@@ -1,0 +1,29 @@
+<!-- _product_card.html: tarjeta de producto -->
+{% load static %}
+<div class="card h-100 shadow-sm product-card">
+    <a href="{{ product.get_absolute_url }}" class="text-decoration-none">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+        {% else %}
+            <img src="{% static 'img/placeholder.png' %}" class="card-img-top" alt="Sin imagen">
+        {% endif %}
+    </a>
+    <div class="card-body">
+        <h5 class="card-title">{{ product.name }}</h5>
+        <p class="card-text fw-bold text-primary">${{ product.price|floatformat:2 }}</p>
+    </div>
+    <div class="card-footer bg-white border-top-0">
+         <a href="{% url 'cart:add_to_cart' product.id %}" class="btn btn-outline-primary w-100">Añadir al Carrito</a>
+    </div>
+</div>
+
+<style>
+/* Estilo simple para las tarjetas de producto */
+.product-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+</style>

@@ -1,0 +1,39 @@
+# Placeholder content for beauty_shop/.gitignore
+# Entornos virtuales
+.venv/
+venv/
+
+# IDEs
+.idea/
+.vscode/
+
+# Archivos compilados por Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Archivos temporales
+*.log
+*.pot
+*.pyc
+*.pyo
+*.swp
+*.swo
+*.sqlite3
+
+# Archivos de entorno
+.env
+.env.*
+
+# Archivos de backup
+*.bak
+*.tmp
+
+# Archivos de ejecución
+db.sqlite3
+
+# Archivos de ejecución Docker (opcional)
+*.pid
+
+# Node modules si usas frontend desacoplado
+node_modules/

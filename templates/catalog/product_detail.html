@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row gy-4">
+        <!-- Imagen del producto -->
+        <div class="col-md-6">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded shadow-sm" loading="lazy">
+            {% else %}
+                <img src="https://via.placeholder.com/600x400.png?text={% trans 'Sin Imagen' %}" 
+                     alt="{% trans 'Sin imagen disponible' %}" class="img-fluid rounded" loading="lazy">
+            {% endif %}
+        </div>
+
+        <!-- Detalles del producto -->
+        <div class="col-md-6 d-flex flex-column">
+            <h1 class="display-5 fw-bold">{{ product.name }}</h1>
+
+            {% if product.category %}
+                <a href="{{ product.category.get_absolute_url }}" class="text-muted text-decoration-none mb-3 d-inline-block">
+                    &raquo; {{ product.category.name }}
+                </a>
+            {% endif %}
+
+            <p class="fs-4 text-primary my-3 fw-semibold">${{ product.price|floatformat:2 }}</p>
+
+            <p class="lead" style="white-space: pre-line;">{{ product.description }}</p>
+
+            <hr class="my-4">
+
+            <form action="{% url 'cart:add_to_cart' product.id %}" method="post" class="mt-auto">
+                {% csrf_token %}
+                <div class="row align-items-center g-3">
+                    <div class="col-12 col-sm-4">
+                        <label for="id_quantity" class="form-label">{% trans "Cantidad:" %}</label>
+                        <input type="number" name="quantity" id="id_quantity" class="form-control" value="1" min="1" max="{{ product.stock }}" required aria-describedby="stockHelp">
+                        <div id="stockHelp" class="form-text">
+                            {% blocktrans %}Stock disponible: {{ stock }} unidades{% endblocktrans with stock=product.stock %}
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-8">
+                        <button type="submit" class="btn btn-primary btn-lg w-100" aria-label="{% trans 'Añadir al carrito' %}">
+                            <i class="fas fa-cart-plus me-2" aria-hidden="true"></i> {% trans "Añadir al Carrito" %}
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="mt-4">
+                <p class="mb-2 text-success">
+                    <i class="fas fa-check-circle me-2" aria-hidden="true"></i>
+                    {% trans "Disponible en stock" %} ({{ product.stock }})
+                </p>
+                <p class="text-info mb-0">
+                    <i class="fas fa-truck me-2" aria-hidden="true"></i> {% trans "Envío a todo el país" %}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Productos relacionados / recomendaciones -->
+    <div class="row mt-5">
+        <div class="col">
+            <h3 class="mb-3 fw-semibold">{% trans "También te podría interesar" %}</h3>
+            <!-- Aquí puedes agregar un bloque para mostrar productos relacionados -->
+        </div>
+    </div>
+</div>
+{% endblock %}
