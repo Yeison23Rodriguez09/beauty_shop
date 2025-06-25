@@ -1,14 +1,19 @@
 # render.yaml
 
-# DECLARAMOS LAS BASES DE DATOS AL PRINCIPIO
-databases:
-  # Base de Datos PostgreSQL
-  - name: postgres-db
+services:
+  # 1. Base de Datos PostgreSQL (Definida como un servicio)
+  - type: pserv # 'pserv' es el tipo para un servicio de PostgreSQL
+    name: postgres-db
     plan: free
 
-# AHORA DECLARAMOS LOS SERVICIOS QUE USAN ESAS BASES DE DATOS
-services:
-  # 1. El Servidor Web (Tu aplicación Django)
+  # 2. El Cache/Broker de Redis para Celery
+  - type: redis
+    name: redis-cache
+    plan: free
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList: []
+
+  # 3. El Servidor Web (Tu aplicación Django)
   - type: web
     name: beauty-shop
     runtime: python
@@ -38,7 +43,7 @@ services:
           name: redis-cache
           property: connectionString
 
-  # 2. El Worker para Tareas en Segundo Plano (Celery)
+  # 4. El Worker para Tareas en Segundo Plano (Celery)
   - type: worker
     name: beauty-shop-worker
     runtime: python
@@ -67,9 +72,4 @@ services:
           name: redis-cache
           property: connectionString
 
-  # 3. El Cache/Broker de Redis para Celery
-  - type: redis
-    name: redis-cache
-    plan: free
-    maxmemoryPolicy: allkeys-lru
-    ipAllowList: []
+# El bloque 'databases' ha sido eliminado por completo.
