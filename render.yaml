@@ -1,5 +1,12 @@
 # render.yaml
 
+# DECLARAMOS LAS BASES DE DATOS AL PRINCIPIO
+databases:
+  # Base de Datos PostgreSQL
+  - name: postgres-db
+    plan: free
+
+# AHORA DECLARAMOS LOS SERVICIOS QUE USAN ESAS BASES DE DATOS
 services:
   # 1. El Servidor Web (Tu aplicación Django)
   - type: web
@@ -7,7 +14,6 @@ services:
     runtime: python
     plan: free
     branch: main
-    # ... (el resto de la configuración del servicio web se mantiene igual)
     buildCommand: |
       pip install -r requirements.txt
       python manage.py collectstatic --no-input
@@ -38,7 +44,6 @@ services:
     runtime: python
     plan: free
     branch: main
-    # ... (el resto de la configuración del worker se mantiene igual)
     buildCommand: "pip install -r requirements.txt"
     startCommand: "celery -A config.celery worker --loglevel=info"
     envVars:
@@ -67,11 +72,4 @@ services:
     name: redis-cache
     plan: free
     maxmemoryPolicy: allkeys-lru
-    ipAllowList: [] # <-- LA LÍNEA QUE RESUELVE EL ERROR. Lista vacía permite acceso de otros servicios de la cuenta.
-
-
-# Definición de los servicios de base de datos que usaremos
-databases:
-  # 4. La Base de Datos PostgreSQL
-  - name: postgres-db
-    plan: free
+    ipAllowList: []
