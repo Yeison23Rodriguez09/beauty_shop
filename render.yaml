@@ -1,6 +1,7 @@
 # render.yaml
+
 services:
-  # 1. Base de Datos PostgreSQL (Render la proporciona y debes copiar su DATABASE_URL manualmente)
+  # 1. Base de Datos PostgreSQL (Render la proporciona, pero no necesita configuración de runtime ni startCommand)
   - type: pserv
     name: postgres-db
     plan: free
@@ -26,7 +27,7 @@ services:
         value: false
       - key: DATABASE_URL
         value: postgres://USUARIO:CONTRASENA@HOST:5432/NOMBRE_BASE
-        # ⚠️ Reemplaza esto con el valor de "Internal Database URL" de tu servicio PostgreSQL
+        # Reemplaza esto con la URL real (Internal Database URL) que te da Render
       - key: ALLOWED_HOSTS
         value: beauty-shop.onrender.com
       - key: EMAIL_HOST
