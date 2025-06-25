@@ -1,20 +1,6 @@
 # render.yaml
-
-# 1. Declaramos la base de datos en su bloque correcto.
-databases:
-  - name: postgres-db
-    plan: free
-
-# 2. Declaramos los servicios que la utilizarán.
 services:
-  # Servicio de Redis
-  - type: redis
-    name: redis-cache
-    plan: free
-    maxmemoryPolicy: allkeys-lru
-    ipAllowList: []
-
-  # Servicio Web (Django)
+  # Servidor Web (Django)
   - type: web
     name: beauty-shop
     runtime: python
@@ -24,7 +10,7 @@ services:
       pip install -r requirements.txt
       python manage.py collectstatic --no-input
       python manage.py migrate
-    startCommand: "gunicorn config.wsgi:application"
+    startCommand: gunicorn config.wsgi:application
     healthCheckPath: /
     envVars:
       - key: PYTHON_VERSION
@@ -34,24 +20,18 @@ services:
       - key: DEBUG
         value: false
       - key: DATABASE_URL
-        fromService:
-          type: pserv
-          name: postgres-db
-          property: internalConnectionString # <-- LA CORRECCIÓN CLAVE
+        value: <agrega_tu_valor_postgresql_url>
       - key: REDIS_URL
-        fromService:
-          type: redis
-          name: redis-cache
-          property: connectionString
+        value: <agrega_tu_valor_redis_url>
 
-  # Worker de Celery
+  # Worker Celery
   - type: worker
     name: beauty-shop-worker
     runtime: python
     plan: free
     branch: main
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "celery -A config.celery worker --loglevel=info"
+    buildCommand: pip install -r requirements.txt
+    startCommand: celery -A config.celery worker --loglevel=info
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.4
@@ -63,12 +43,6 @@ services:
       - key: DEBUG
         value: false
       - key: DATABASE_URL
-        fromService:
-          type: pserv
-          name: postgres-db
-          property: internalConnectionString # <-- LA CORRECCIÓN CLAVE
+        value: <agrega_tu_valor_postgresql_url>
       - key: REDIS_URL
-        fromService:
-          type: redis
-          name: redis-cache
-          property: connectionString
+        value: <agrega_tu_valor_redis_url>
