@@ -1,12 +1,12 @@
-# render.yaml - Coloca este archivo en la raíz de tu proyecto
+# render.yaml
 
 services:
   # 1. El Servidor Web (Tu aplicación Django)
   - type: web
-    name: beauty-shop # El nombre de tu app
-    env: python # El entorno de ejecución
-    plan: free # Puedes cambiarlo a un plan de pago si necesitas más potencia
-    branch: main # O la rama que quieras desplegar (ej. master)
+    name: beauty-shop
+    runtime: python # <-- CORRECCIÓN AQUÍ
+    plan: free
+    branch: main
 
     buildCommand: |
       pip install -r requirements.txt
@@ -14,29 +14,30 @@ services:
       python manage.py migrate
     startCommand: "gunicorn config.wsgi:application"
 
-    healthCheckPath: / # Ruta que Render usará para saber si tu app está viva
+    healthCheckPath: /
 
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.4 # Asegúrate que sea la misma versión que usas localmente
+        value: 3.11.4
       - key: SECRET_KEY
-        generateValue: true # Render creará una clave segura automáticamente
+        generateValue: true
       - key: DEBUG
         value: false
       - key: DATABASE_URL
         fromService:
           type: pserv
-          name: postgres-db # El nombre que le damos a la BD abajo
+          name: postgres-db
           property: connectionString
       - key: REDIS_URL
         fromService:
           type: redis
-          name: redis-cache # El nombre que le damos a Redis abajo
+          name: redis-cache
+          property: connectionString
 
   # 2. El Worker para Tareas en Segundo Plano (Celery)
   - type: worker
     name: beauty-shop-worker
-    env: python
+    runtime: python # <-- CORRECCIÓN AQUÍ
     plan: free
     branch: main
 
@@ -73,4 +74,4 @@ databases:
   # 4. El Cache/Broker de Redis para Celery
   - name: redis-cache
     plan: free
-    maxmemoryPolicy: allkeys-lru # Política recomendada para usar Redis como caché
+    maxmemoryPolicy: allkeys-lru
