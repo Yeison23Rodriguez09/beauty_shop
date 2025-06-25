@@ -1,11 +1,9 @@
 # render.yaml
 services:
-  # 1. Base de Datos PostgreSQL (NO usar runtime ni startCommand)
   - type: pserv
     name: postgres-db
     plan: free
 
-  # 2. Servidor Web: Django App
   - type: web
     name: beauty-shop
     runtime: python

@@ -5,27 +5,31 @@ from .base import *
 
 DEBUG = False
 
-# Allowed hosts
+# Allowed hosts (Render proporciona el dominio por defecto)
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'beauty-shop.onrender.com').split(',')
 if not any(ALLOWED_HOSTS):
     raise ValueError("DJANGO_ALLOWED_HOSTS no está definido correctamente.")
 
-# Configuración de la base de datos con DATABASE_URL (Render lo proporciona)
+# Redirección después del login para evitar error 404 en /accounts/profile/
+LOGIN_REDIRECT_URL = '/'
+
+# Configuración de la base de datos (Render proporciona DATABASE_URL)
 DATABASES = {
     'default': dj_database_url.config(conn_max_age=600)
 }
 
-# Archivos estáticos
+# Archivos estáticos y media
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# WhiteNoise para servir archivos estáticos en producción
 MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Email SMTP
+# Configuración del correo (SMTP)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
@@ -47,8 +51,9 @@ SECURE_HSTS_SECONDS = 3600
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
-# CORS
-CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')
-if not any(CORS_ALLOWED_ORIGINS):
-    raise ValueError("CORS_ALLOWED_ORIGINS debe estar definido.")
-
+# CORS (maneja valores vacíos sin lanzar error)
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '')
+if CORS_ALLOWED_ORIGINS:
+    CORS_ALLOWED_ORIGINS = CORS_ALLOWED_ORIGINS.split(',')
+else:
+    CORS_ALLOWED_ORIGINS = []
