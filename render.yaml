@@ -1,18 +1,5 @@
 # render.yaml
 services:
-  # 1. Base de Datos PostgreSQL
-  - type: pserv
-    name: postgres-db
-    plan: free
-
-  # 2. Redis para Celery (puede quedarse por si lo usas localmente)
-  - type: redis
-    name: redis-cache
-    plan: free
-    maxmemoryPolicy: allkeys-lru
-    ipAllowList: []
-
-  # 3. Servidor Web: Django App
   - type: web
     name: beauty-shop
     runtime: python
@@ -32,12 +19,6 @@ services:
       - key: DEBUG
         value: false
       - key: DATABASE_URL
-        fromService:
-          type: pserv
-          name: postgres-db
-          property: internalConnectionString
+        value: <DATABASE_URL from your managed Postgres service>
       - key: REDIS_URL
-        fromService:
-          type: redis
-          name: redis-cache
-          property: connectionString
+        value: <REDIS_URL from your managed Redis service>
