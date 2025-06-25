@@ -1,19 +1,20 @@
 # render.yaml
 
-services:
-  # 1. Base de Datos PostgreSQL (Definida como un servicio)
-  - type: pserv # 'pserv' es el tipo para un servicio de PostgreSQL
-    name: postgres-db
+# 1. Declaramos la base de datos en su bloque correcto.
+databases:
+  - name: postgres-db
     plan: free
 
-  # 2. El Cache/Broker de Redis para Celery
+# 2. Declaramos los servicios que la utilizarán.
+services:
+  # Servicio de Redis
   - type: redis
     name: redis-cache
     plan: free
     maxmemoryPolicy: allkeys-lru
     ipAllowList: []
 
-  # 3. El Servidor Web (Tu aplicación Django)
+  # Servicio Web (Django)
   - type: web
     name: beauty-shop
     runtime: python
@@ -36,14 +37,14 @@ services:
         fromService:
           type: pserv
           name: postgres-db
-          property: connectionString
+          property: internalConnectionString # <-- LA CORRECCIÓN CLAVE
       - key: REDIS_URL
         fromService:
           type: redis
           name: redis-cache
           property: connectionString
 
-  # 4. El Worker para Tareas en Segundo Plano (Celery)
+  # Worker de Celery
   - type: worker
     name: beauty-shop-worker
     runtime: python
@@ -65,11 +66,9 @@ services:
         fromService:
           type: pserv
           name: postgres-db
-          property: connectionString
+          property: internalConnectionString # <-- LA CORRECCIÓN CLAVE
       - key: REDIS_URL
         fromService:
           type: redis
           name: redis-cache
           property: connectionString
-
-# El bloque 'databases' ha sido eliminado por completo.
